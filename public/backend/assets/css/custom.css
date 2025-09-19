@@ -1,0 +1,13 @@
+.feather-16 {
+
+    width: 16px;
+    height: 16px;
+}
+
+table.dataTable td {
+    font-size: 1em;
+  }
+
+  table.dataTable tr.dtrg-level-0 td {
+    font-size: 1.1em;
+  }
