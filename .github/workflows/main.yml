@@ -22,8 +22,8 @@ jobs:
 
             # kalau folder belum ada, clone pertama kali
             if [ ! -d "$APP_DIR/.git" ]; then
-              sudo mkdir -p "$APP_DIR"
-              sudo chown -R "$USER":"$USER" "$APP_DIR"
+              su mkdir -p "$APP_DIR"
+              su chown -R "$USER":"$USER" "$APP_DIR"
               git clone https://github.com/khoirurrozikin86/needle.git "$APP_DIR"
             fi
 
@@ -42,8 +42,8 @@ jobs:
             php artisan route:cache || true
             php artisan view:cache || true
 
-            sudo chown -R www-data:www-data "$APP_DIR"
-            sudo chmod -R 775 "$APP_DIR/storage" "$APP_DIR/bootstrap/cache"
+            su chown -R www-data:www-data "$APP_DIR"
+            su chmod -R 775 "$APP_DIR/storage" "$APP_DIR/bootstrap/cache"
 
-            sudo systemctl reload php8.2-fpm || true
-            sudo systemctl reload nginx || true
+            su systemctl reload php8.2-fpm || true
+            su systemctl reload nginx || true
