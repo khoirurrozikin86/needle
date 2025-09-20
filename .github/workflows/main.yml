@@ -8,7 +8,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy over SSH (no-sudo)
+      - name: Deploy over SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.DEPLOY_HOST }}     # 36.95.208.100
@@ -22,7 +22,7 @@ jobs:
             REPO_URL=https://github.com/khoirurrozikin86/needle.git
             BRANCH=main
 
-            # siapkan folder (sudah dimiliki deploy dari step root)
+            # siapkan folder kerja (pastikan /var/www/laravel milik deploy)
             mkdir -p "$APP_DIR"
 
             # clone pertama kali
@@ -32,14 +32,14 @@ jobs:
 
             cd "$APP_DIR"
 
-            # hindari "dubious ownership" jika pernah ganti owner
+            # hindari "dubious ownership" bila pernah dipegang root
             git config --global --add safe.directory "$APP_DIR"
 
             # update ke commit terbaru
             git fetch origin "$BRANCH" --prune
             git reset --hard "origin/$BRANCH"
 
-            # install composer ke HOME (tanpa sudo) bila belum ada
+            # composer lokal (tanpa sudo)
             if ! command -v composer >/dev/null 2>&1; then
               curl -sS https://getcomposer.org/installer | php
               mkdir -p "$HOME/.local/bin"
@@ -55,7 +55,7 @@ jobs:
             [ -f .env ] || cp .env.example .env || true
             php artisan key:generate || true
 
-            # migrasi (boleh dimatikan jika DB belum siap)
+            # migrasi (matikan jika DB belum siap)
             php artisan migrate --force || true
 
             # cache optimizations
